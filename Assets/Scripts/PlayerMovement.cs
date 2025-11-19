@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 velocity;
     bool isGrounded;
+    bool hasJumped;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +33,9 @@ public class PlayerMovement : MonoBehaviour
         if(isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
+            hasJumped = false;
         }
+
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
@@ -41,13 +44,23 @@ public class PlayerMovement : MonoBehaviour
 
         controller.Move(move * speed * Time.deltaTime);
 
-        if(Input.GetButtonDown("Jump") && isGrounded)
+        if(Input.GetButton("Jump") && isGrounded && !hasJumped)
         {
             velocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
+            hasJumped = true;
         }
 
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            speed = speed * 1.5f;
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            speed = speed / 1.5f;
+        }
     }
 }
