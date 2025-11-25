@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -10,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 12f;
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
+
+    public bool isClimbing;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
@@ -50,7 +53,18 @@ public class PlayerMovement : MonoBehaviour
             hasJumped = true;
         }
 
-        velocity.y += gravity * Time.deltaTime;
+        if (isClimbing && !isGrounded)
+        {
+            velocity.y = 1;
+            hasJumped = true;
+        }
+        if (!isClimbing && !isGrounded)
+        {
+            isClimbing = false;
+            isGrounded = true;
+        }
+
+            velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
 
