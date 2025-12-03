@@ -8,6 +8,11 @@ public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
 
+    public Camera playerCamera;
+    public float defaultFOV = 90f;
+    public float sprintingFOV = 100f;
+    public float t = 0.1f;
+
     public float speed = 12f;
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
@@ -70,11 +75,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
+            playerCamera.fieldOfView = sprintingFOV;
             speed = speed * 1.5f;
         }
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             speed = speed / 1.5f;
+            playerCamera.fieldOfView = defaultFOV;
         }
     }
 }
