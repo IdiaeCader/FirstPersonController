@@ -69,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
             isGrounded = true;
         }
 
-            velocity.y += gravity * Time.deltaTime;
+        velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
 
