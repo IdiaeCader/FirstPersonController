@@ -28,18 +28,20 @@ Material:
     - _FaceDilate: 0
     - _GradientScale: 5
     - _OutlineSoftness: 0
-    - _OutlineWidth: 0
+    - _OutlineWidth: 0.31
     - _ScaleRatioA: 0.8
     - _ScaleRatioB: 1
     - _ScaleRatioC: 0.7
     - _TextureHeight: 512
     - _TextureWidth: 512
+    - _UnderlayDilate: 0.24
     - _UnderlayOffsetX: 0.4
     - _UnderlayOffsetY: -0.4
+    - _UnderlaySoftness: 0
     - _WeightBold: 0.5
     m_Colors:
     - _FaceColor: {r: 0, g: 0, b: 0, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 1}
+    - _UnderlayColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:

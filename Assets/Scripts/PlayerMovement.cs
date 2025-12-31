@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -11,10 +9,13 @@ public class PlayerMovement : MonoBehaviour
     public Camera playerCamera;
     public float defaultFOV = 90f;
     public float sprintingFOV = 100f;
-    public float t = 0.1f;
+    public float fovSmoothSpeed = 8f;
 
-    public float speed = 12f;
-    public float gravity = -9.81f;
+    public float walkSpeed = 8f;
+    public float sprintMultiplier = 1.5f;
+    private float currentSpeed;
+
+    public float gravity = -30;
     public float jumpHeight = 3f;
 
     public bool isClimbing;
@@ -27,61 +28,70 @@ public class PlayerMovement : MonoBehaviour
     bool isGrounded;
     bool hasJumped;
 
-    // Start is called before the first frame update
     void Start()
     {
-        
+        currentSpeed = walkSpeed;
+        playerCamera.fieldOfView = defaultFOV;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // Ground check
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if(isGrounded && velocity.y < 0)
+        if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
             hasJumped = false;
         }
 
-
+        // Movement input
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
+        controller.Move(move * currentSpeed * Time.deltaTime);
 
-        controller.Move(move * speed * Time.deltaTime);
-
-        if(Input.GetButton("Jump") && isGrounded && !hasJumped)
+        // Jumping
+        if (Input.GetButton("Jump") && isGrounded && !hasJumped)
         {
-            velocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             hasJumped = true;
         }
 
-        if (isClimbing && !isGrounded)
+        if (isClimbing && !isGrounded && Input.GetButton("Jump"))
         {
-            velocity.y = 1;
+            velocity.y = 3f;
             hasJumped = true;
         }
+
         if (!isClimbing && !isGrounded)
         {
             isClimbing = false;
             isGrounded = true;
         }
 
+        // Gravity
         velocity.y += gravity * Time.deltaTime;
-
         controller.Move(velocity * Time.deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            playerCamera.fieldOfView = sprintingFOV;
-            speed = speed * 1.5f;
-        }
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            speed = speed / 1.5f;
-            playerCamera.fieldOfView = defaultFOV;
-        }
+        // --------------------
+        // Sprint + Smooth FOV
+        // --------------------
+
+        bool isSprinting = Input.GetKey(KeyCode.LeftShift);
+
+        // Speed handling (safe, no stacking)
+        currentSpeed = isSprinting ? walkSpeed * sprintMultiplier : walkSpeed;
+
+        // Target FOV
+        float targetFOV = isSprinting ? sprintingFOV : defaultFOV;
+
+        // Smooth FOV transition
+        playerCamera.fieldOfView = Mathf.Lerp(
+            playerCamera.fieldOfView,
+            targetFOV,
+            Time.deltaTime * fovSmoothSpeed
+        );
     }
 }
