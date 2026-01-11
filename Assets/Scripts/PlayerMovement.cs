@@ -75,9 +75,7 @@ public class PlayerMovement : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
-        // --------------------
         // Sprint + Smooth FOV
-        // --------------------
 
         bool isSprinting = Input.GetKey(KeyCode.LeftShift);
 
