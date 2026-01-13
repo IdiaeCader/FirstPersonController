@@ -91,5 +91,6 @@ public class PlayerMovement : MonoBehaviour
             targetFOV,
             Time.deltaTime * fovSmoothSpeed
         );
+
     }
 }
