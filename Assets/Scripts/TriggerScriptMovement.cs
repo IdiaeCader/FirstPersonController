@@ -11,11 +11,14 @@ public class TriggerScriptMovement : MonoBehaviour
     public Transform openDestination;
     public Transform closedDestination;
 
+    public AudioSource audioSource;
+
     public float speed;
     public void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
         {
+            audioSource.Play();
             activated = true;
         }
     }
